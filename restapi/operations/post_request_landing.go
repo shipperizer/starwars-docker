@@ -38,7 +38,7 @@ type PostRequestLanding struct {
 }
 
 func (o *PostRequestLanding) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	route, _ := o.Context.RouteInfo(r)
+	route, _, _ := o.Context.RouteInfo(r)
 	var Params = NewPostRequestLandingParams()
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params

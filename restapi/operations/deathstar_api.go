@@ -156,6 +156,11 @@ func (o *DeathstarAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme)
 
 }
 
+// Authorizer
+func (o *DeathstarAPI) Authorizer() runtime.Authorizer {
+	return nil
+}
+
 // ConsumersFor gets the consumers for the specified media types
 func (o *DeathstarAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
 

@@ -38,7 +38,7 @@ type Get struct {
 }
 
 func (o *Get) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	route, _ := o.Context.RouteInfo(r)
+	route, _, _ := o.Context.RouteInfo(r)
 	var Params = NewGetParams()
 
 	if err := o.Context.BindValidRequest(r, route, &Params); err != nil { // bind params
