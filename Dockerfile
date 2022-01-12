@@ -1,16 +1,33 @@
 # BUILDER
-FROM alpine:3.7 as builder
+FROM --platform=$BUILDPLATFORM golang:1.16.5 AS builder
 
-RUN apk upgrade \
-	&& apk add --no-cache go musl-dev
+ARG SKAFFOLD_GO_GCFLAGS
+ARG TARGETOS
+ARG TARGETARCH
 
-ENV GOPATH=/go
-COPY . /go/src/github.com/cilium/starwars-docker/
-RUN go install -v github.com/cilium/starwars-docker/
+ENV GOOS=$TARGETOS
+ENV GOARCH=$TARGETARCH
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+
+RUN go env
+
+WORKDIR /var/app
+
+COPY . .
+
+RUN go build -a -installsuffix nocgo -o /go/bin/app main.go
+
+LABEL org.opencontainers.image.source=https://github.com/shipperizer/starwars-docker
 
 # RUNTIME
-FROM alpine:3.7
+FROM gcr.io/distroless/static:nonroot
+
+LABEL org.opencontainers.image.source=https://github.com/shipperizer/starwars-docker
 LABEL maintainer "Thomas Graf <tgraf@tgraf.ch>"
-COPY --from=builder /go/bin/starwars-docker /
+
+COPY --from=builder /go/bin/app /
+
 EXPOSE 80
-ENTRYPOINT ["/starwars-docker", "--port", "80", "--host", "0.0.0.0"]
+
+ENTRYPOINT ["/app", "--port", "80", "--host", "0.0.0.0"]
