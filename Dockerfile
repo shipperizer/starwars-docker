@@ -30,4 +30,4 @@ COPY --from=builder /go/bin/app /
 
 EXPOSE 80
 
-ENTRYPOINT ["/app", "--port", "80", "--host", "0.0.0.0"]
+ENTRYPOINT ["/app", "--port", "8000", "--host", "0.0.0.0"]
